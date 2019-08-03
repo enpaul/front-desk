@@ -1,0 +1,15 @@
+[dev-packages]
+pylint = "*"
+black = "*"
+pytest = "*"
+tox = "*"
+mypy = "*"
+
+[packages]
+front_desk = {path = "."}
+
+[requires]
+python_version = "3.7"
+
+[pipenv]
+allow_prereleases = true
