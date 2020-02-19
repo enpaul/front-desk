@@ -66,19 +66,16 @@ make docs SPHINX_FORMAT=<some other sphinx format>
 
 ## developing
 
+This project requires [Poetry](https://python-poetry.org/docs/#installation) version
+1.0 or newer.
+
 ```bash
-# install poetry
-pip3 install poetry --user --pre
-
-# install pre-commit
-pip3 install pre-commit --user
-
-# install pre-commit hooks
-pre-commit install
-
 # create virtual environment from lockfile
 poetry install
 
-# run the tests and static analysis
+# install pre-commit hooks
+poetry run pre-commit install
+
+# run the automated tests
 poetry run tox
 ```
