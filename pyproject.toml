@@ -4,12 +4,26 @@ version = "0.1.0"
 description = "REST API for issuing and managing JSON web tokens"
 authors = ["Ethan Paul <e@enp.one>"]
 license = "MIT"
+repository = "https://github.com/enpaul/keyosk/"
+packages = [{include = "keyosk"}]
 
 [tool.poetry.dependencies]
 python = "^3.6"
 toml = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
+tox = "^3.14.5"
+sphinx = "^2.4.2"
+sphinx-autodoc-typehints = "^1.10.3"
+reorder-python-imports = "^1.9.0"
+bandit = "^1.6.2"
+ipython = "^7.12.0"
+pre-commit = "^2.1.0"
+mypy = "^0.761"
+pytest = "^5.3.5"
+black = {version = "^19.10b0", allow-prereleases = true}
+pylint = "2.3.1"
+astroid = "2.2.5"
 
 [build-system]
 requires = ["poetry>=1.0.0"]
