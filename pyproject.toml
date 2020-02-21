@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "keyosk"
-version = "0.1.0"
+version = "0.1.0-alpha-1"
 description = "REST API for issuing and managing JSON web tokens"
 authors = ["Ethan Paul <e@enp.one>"]
 license = "MIT"
@@ -10,6 +10,11 @@ packages = [{include = "keyosk"}]
 [tool.poetry.dependencies]
 python = "^3.6"
 toml = "^0.10.0"
+peewee = "^3.13.1"
+pymysql = "^0.9.3"
+marshmallow = "^3.5.0"
+dataclasses = {version = "^0.7", python = "3.6"}
+passlib = "^1.7.2"
 
 [tool.poetry.dev-dependencies]
 tox = "^3.14.5"
