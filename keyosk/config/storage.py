@@ -1,3 +1,4 @@
+"""Data containers and utilities related to the storage configuration"""
 from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import field
@@ -51,6 +52,8 @@ class SQLiteStorageConfigSerializer(msh.Schema):
     path = custom_fields.Path()
     pragmas = msh.fields.Dict(keys=msh.fields.String(), values=msh.fields.Raw())
 
+    # pylint: disable=unused-argument,no-self-use
+
     @msh.post_load
     def _make_dataclass(self, data: Mapping[str, Any], *args, **kwargs):
         return KeyoskSQLiteStorageConfig(**data)
@@ -101,6 +104,8 @@ class MariaStorageConfigSerializer(msh.Schema):
     username = msh.fields.String()
     password = msh.fields.String(allow_none=True)
 
+    # pylint: disable=unused-argument,no-self-use
+
     @msh.post_load
     def _make_dataclass(self, data: Mapping[str, Any], *args, **kwargs):
         return KeyoskMariaStorageConfig(**data)
@@ -141,6 +146,8 @@ class StorageConfigSerializer(msh.Schema):
     backend = custom_fields.EnumItem(datatypes.StorageBackend, pretty_names=True)
     sqlite = msh.fields.Nested(SQLiteStorageConfigSerializer)
     maria = msh.fields.Nested(MariaStorageConfigSerializer)
+
+    # pylint: disable=unused-argument,no-self-use
 
     @msh.post_load
     def _make_dataclass(self, data: Mapping[str, Any], *args, **kwargs):
