@@ -13,7 +13,7 @@ with open(Path(BASE_DIR, "..", "keyosk", "__about__.py")) as infile:
 
 project = ABOUT["__title__"]
 copyright = "2019, Ethan Paul"
-author = ", ".join(ABOUT["__authors__"])
+author = "Ethan Paul <e@enp.one>"
 
 # The full version, including alpha/beta/rc tags
 release = ABOUT["__version__"]
