@@ -62,11 +62,12 @@ class KeyoskParser(webargs.flaskparser.FlaskParser):
 def make_pagination(matches: Sequence[Any], request=flask.request) -> PaginationData:
     """Paginate a sequence of result data
 
-    Parse the pagination parameters out of the request body and filter the list of matches
-    accordinglly
+    Parse the pagination parameters out of the request body and filter the list of
+    matches accordinglly
+
     :param matches: Sequence of results to paginate
-    :returns: Pagination data tuple with processed results, pagination parameters, and the headers
-              to return to the client
+    :returns: Pagination data tuple with processed results, pagination parameters, and
+              the headers to return to the client
     """
 
     pagination_parameters = {
