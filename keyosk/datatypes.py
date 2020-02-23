@@ -7,14 +7,7 @@ from typing import Union
 Extras = Dict[str, Union[int, float, bool, str, None]]
 
 
-class TokenUsage(enum.Enum):
-    """Possible usage values for an issued JWT
-
-    Values will be the value of the ``ksk-usg`` claim in the issued token
-    """
-
-    REFRESH = "ref"
-    ACCESS = "acc"
+TokenClaims = Dict[str, Union[str, int, bool, Dict[str, int]]]
 
 
 @enum.unique

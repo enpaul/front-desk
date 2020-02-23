@@ -11,6 +11,7 @@ Thus the :func:`initialize` function and :class:`KeyoskBaseModel` class need to 
 separate modules, and for somewhat arbitrary reasons the base model was put here and the
 init function kept in init.
 """
+import uuid
 from typing import Any
 from typing import Generator
 from typing import List
@@ -36,7 +37,9 @@ class KeyoskBaseModel(peewee.Model):
     class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
         database = INTERFACE
 
-    uuid = peewee.UUIDField(null=False, unique=True, primary_key=True)
+    uuid = peewee.UUIDField(
+        null=False, unique=True, primary_key=True, default=uuid.uuid4
+    )
 
     @staticmethod
     def dict_keys() -> List[str]:

@@ -5,7 +5,6 @@ from typing import List
 import peewee
 
 from keyosk.database._shared import KeyoskBaseModel
-from keyosk.database.domain_admin import DomainAdmin
 
 
 class Domain(KeyoskBaseModel):
@@ -29,8 +28,8 @@ class Domain(KeyoskBaseModel):
                                 be valid for
     :attribute lifespan_refresh: Number of seconds an an issued JWT refresh token should
                                  be valid for
-    :attribute administration: Container of additional settings related to the
-                               administration of the domain itself
+    :property administration: Container of additional settings related to the
+                              administration of the domain itself
     :property access_list_names: List of Access Control Lists under the domain that accounts
                                  can have permission entries on
     :property permission_names: List of permissions that can be assigned to an account's ACL
@@ -53,7 +52,6 @@ class Domain(KeyoskBaseModel):
     enable_refresh = peewee.BooleanField(null=False)
     lifespan_access = peewee.IntegerField(null=False)
     lifespan_refresh = peewee.IntegerField(null=False)
-    administration = peewee.ForeignKeyField(DomainAdmin, null=False, unique=True)
 
     @property
     def access_list_names(self) -> List[str]:
@@ -64,6 +62,11 @@ class Domain(KeyoskBaseModel):
     def permission_names(self) -> List[str]:
         """Return the list of permission names from the backref"""
         return [item.name for item in self._permissions]
+
+    @property
+    def administration(self):
+        """Return administration settings container"""
+        return self._administration[0]
 
     @staticmethod
     def dict_keys() -> List[str]:

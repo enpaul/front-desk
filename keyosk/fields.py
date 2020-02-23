@@ -59,7 +59,7 @@ class EnumItem(msh.fields.Field):
                 return self.enum[self._from_pretty_name(value)]
             return self.enum[value]
         except ValueError as err:
-            raise msh.ValidationError(err)
+            raise msh.ValidationError(str(err))
         except (KeyError, AttributeError) as err:
             raise msh.ValidationError(f"No {self.enum} named {err}")
 
@@ -72,11 +72,11 @@ class EnumItem(msh.fields.Field):
         return value.replace("-", "_").upper()
 
 
-class Path(msh.fields.String):
+class PathString(msh.fields.String):
     """Translate between a string and a path object"""
 
-    def _serialize(self, value: Union[str, Path], *args, **kwargs) -> str:
-        return super()._serialize(str(value), *args, **kwargs)
+    def _serialize(self, value: Union[str, Path], attr, obj, **kwargs) -> str:
+        return super()._serialize(str(value), attr, obj, **kwargs)
 
-    def _deserialize(self, value: str, *args, **kwargs) -> Path:
-        return Path(super()._deserialize(value, *args, **kwargs))
+    def _deserialize(self, value: str, attr, data, **kwargs) -> Path:
+        return Path(super()._deserialize(value, attr, data, **kwargs))

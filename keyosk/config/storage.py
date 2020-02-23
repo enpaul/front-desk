@@ -49,7 +49,7 @@ class SQLiteStorageConfigSerializer(msh.Schema):
     :class:`KeyoskSQLiteStorageConfig` class.
     """
 
-    path = custom_fields.Path()
+    path = custom_fields.PathString()
     pragmas = msh.fields.Dict(keys=msh.fields.String(), values=msh.fields.Raw())
 
     # pylint: disable=unused-argument,no-self-use

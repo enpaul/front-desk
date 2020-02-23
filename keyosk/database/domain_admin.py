@@ -16,8 +16,9 @@ from typing import Tuple
 import peewee
 
 from keyosk.database._shared import KeyoskBaseModel
-from keyosk.database.mappings import DomainAccessList
-from keyosk.database.mappings import DomainPermission
+from keyosk.database.domain import Domain
+from keyosk.database.domain import DomainAccessList
+from keyosk.database.domain import DomainPermission
 
 
 class DomainAdmin(KeyoskBaseModel):
@@ -55,6 +56,9 @@ class DomainAdmin(KeyoskBaseModel):
     class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
         table_name = "domain_admin"
 
+    domain = peewee.ForeignKeyField(
+        Domain, unique=True, null=False, backref="_administration"
+    )
     access_list = peewee.ForeignKeyField(DomainAccessList, null=True)
     domain_read = peewee.ForeignKeyField(DomainPermission, null=True)
     domain_update = peewee.ForeignKeyField(DomainPermission, null=True)

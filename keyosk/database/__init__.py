@@ -28,21 +28,21 @@ from keyosk import datatypes
 from keyosk.database._shared import INTERFACE as interface
 from keyosk.database._shared import KeyoskBaseModel
 from keyosk.database.account import Account
+from keyosk.database.account import AccountAssignment
+from keyosk.database.account_acl import AccountACLEntry
 from keyosk.database.domain import Domain
-from keyosk.database.mappings import AccountACL
-from keyosk.database.mappings import AccountAssignment
-from keyosk.database.mappings import DomainAccessList
-from keyosk.database.mappings import DomainAdmin
-from keyosk.database.mappings import DomainPermission
+from keyosk.database.domain import DomainAccessList
+from keyosk.database.domain import DomainPermission
+from keyosk.database.domain_admin import DomainAdmin
 
 
 MODELS: List[Type[KeyoskBaseModel]] = [
     Account,
-    Domain,
     DomainAccessList,
     DomainPermission,
     DomainAdmin,
-    AccountACL,
+    Domain,
+    AccountACLEntry,
     AccountAssignment,
 ]
 

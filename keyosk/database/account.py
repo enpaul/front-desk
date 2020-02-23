@@ -66,7 +66,7 @@ class Account(KeyoskBaseModel):
         :returns: Boolean indicating whether the provided value matches the encrypted
                   secret
         """
-        return passlib.hash.pdkdf2_sha512.verify(
+        return passlib.hash.pbkdf2_sha512.verify(
             value, self.encrypted_server_set_secret
         )
 
@@ -75,7 +75,7 @@ class Account(KeyoskBaseModel):
 
         :param value: The string to set the encrypted client-set-secret to
         """
-        self.encrypted_client_set_secret = passlib.hash.pdkdf2_sha512.hash(value)
+        self.encrypted_client_set_secret = passlib.hash.pbkdf2_sha512.hash(value)
 
     def update_server_set_secret(self, length: int = 42) -> str:
         """Update the server set secret
@@ -84,7 +84,7 @@ class Account(KeyoskBaseModel):
         :returns: The new value of the server set secret
         """
         value = secrets.token_urlsafe(length)
-        self.encrypted_server_set_secret = passlib.hash.pdkdf2_sha512.hash(value)
+        self.encrypted_server_set_secret = passlib.hash.pbkdf2_sha512.hash(value)
         return value
 
     @staticmethod
