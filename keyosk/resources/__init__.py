@@ -3,7 +3,6 @@ from typing import Type
 
 from keyosk.resources._shared import KeyoskResource
 from keyosk.resources.account import AccountMultiResource
-from keyosk.resources.account import AccountPermissionResource
 from keyosk.resources.account import AccountSingleResource
 from keyosk.resources.auth import AuthenticationResource
 from keyosk.resources.blacklist import BlacklistResource
@@ -24,5 +23,4 @@ RESOURCES: List[Type[KeyoskResource]] = [
     DomainAuditResource,
     AccountMultiResource,
     AccountSingleResource,
-    AccountPermissionResource,
 ]

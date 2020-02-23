@@ -31,17 +31,3 @@ class AccountSingleResource(KeyoskResource):
 
     def head(self, account_ref: str) -> ResponseTuple:
         return self._head(self.get(account_ref))
-
-
-class AccountPermissionResource(KeyoskResource):
-
-    ROUTES = "/account/<string:account_ref>/permission"
-
-    def get(self, account_ref: str) -> ResponseTuple:
-        raise NotADirectoryError
-
-    def patch(self, account_ref: str) -> ResponseTuple:
-        raise NotADirectoryError
-
-    def head(self, account_ref: str) -> ResponseTuple:
-        return self._head(self.get(account_ref))
