@@ -1,7 +1,10 @@
 """Application configuration settings containers and loading functions"""
 import os
+from dataclasses import asdict
 from dataclasses import dataclass
 from pathlib import Path
+from typing import Any
+from typing import Mapping
 from typing import Optional
 from typing import Union
 
@@ -28,6 +31,18 @@ class ConfigSerializer(msh.Schema):
     """
 
     storage = msh.fields.Nested(StorageConfigSerializer)
+
+    @msh.post_load
+    def _make_dataclass(self, data: Mapping[str, Any], *args, **kwargs):
+        return KeyoskConfig(**data)
+
+    @msh.pre_dump
+    def _unmake_dataclass(
+        self, data: Union[Mapping[str, Any], KeyoskConfig], *args, **kwargs
+    ):
+        if isinstance(data, KeyoskConfig):
+            return asdict(data)
+        return data
 
 
 def load(source: Optional[Union[str, Path]] = None) -> KeyoskConfig:
