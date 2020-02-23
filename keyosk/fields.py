@@ -1,7 +1,9 @@
 """Custom fields for handing de/serializing custom data types"""
+from datetime import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any
+from typing import Sequence
 from typing import Type
 from typing import Union
 
@@ -80,3 +82,50 @@ class PathString(msh.fields.String):
 
     def _deserialize(self, value: str, attr, data, **kwargs) -> Path:
         return Path(super()._deserialize(value, attr, data, **kwargs))
+
+
+class Epoch(msh.fields.Field):
+    """Translate between datetime objects and an integer reperesenting epoch time"""
+
+    def _serialize(self, value: Union[datetime, int], attr, obj, **kwargs) -> int:
+        """Serialize a datetime object to an integer"""
+
+        if isinstance(value, datetime):
+            return int(value.timestamp())
+        return value
+
+    def _deserialize(self, value: int, attr, data, **kwargs) -> datetime:
+        """Deserialize an integer to a datetime object"""
+
+        try:
+            if value < 0:
+                raise msh.ValidationError(f"Invalid epoch time '{value}'")
+        except TypeError:
+            raise msh.ValidationError(
+                f"Invalid epoch value '{value}' of type '{type(value)}'"
+            )
+        return datetime.fromtimestamp(int(value))
+
+
+class RawMultiType(msh.fields.Raw):
+    """Like raw, but limits the types the value can be to a specified list
+
+    .. note:: Like the Marshmallow :class:`Raw` field, no additional validation is done on the value
+              beyond checking its type.
+    """
+
+    def __init__(self, types: Sequence[type], *args, **kwargs):
+        """Initialize the field
+
+        :param types: Sequence of types that the value to de/serialize can be
+        """
+        super().__init__(*args, **kwargs)
+        self._types = tuple(types)
+
+    def _deserialize(self, value: Any, attr, data, **kwargs) -> Any:
+        """Deserialize the value, raising a validation error if it is not of an allowed type"""
+        if not isinstance(value, self._types):
+            raise msh.ValidationError(
+                f"Invalid value '{value}' of type {type(value)}: expected one of {self._types}"
+            )
+        return value
