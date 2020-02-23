@@ -48,10 +48,11 @@ def test_settings():
 
 def test_filepath(tmp_path):
     tmp_file = Path(tmp_path, "conf.toml")
-    os.environ[constants.ENV_CONFIG_PATH] = str(tmp_file)
     with tmp_file.open("w+") as outfile:
         toml.dump(DEMO_CONFIG, outfile)
 
     assert config.load(tmp_file) == config.ConfigSerializer().load(DEMO_CONFIG)
+    os.environ[constants.ENV_CONFIG_PATH] = str(tmp_file)
+    assert config.load() == config.ConfigSerializer().load(DEMO_CONFIG)
     tmp_file.unlink()
     assert config.load(tmp_file) == config.KeyoskConfig()
