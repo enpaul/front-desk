@@ -8,7 +8,7 @@ from keyosk import constants
 from keyosk import datatypes
 
 
-TEST_CONFIG = {
+DEMO_CONFIG = {
     "storage": {
         "backend": "maria",
         "sqlite": {
@@ -32,17 +32,17 @@ def test_default():
 
 def test_roundtrip():
     serializer = config.ConfigSerializer()
-    loaded = serializer.load(TEST_CONFIG)
-    assert TEST_CONFIG == serializer.dump(loaded)
+    loaded = serializer.load(DEMO_CONFIG)
+    assert DEMO_CONFIG == serializer.dump(loaded)
     assert loaded == serializer.load(serializer.dump(loaded))
 
 
 def test_settings():
-    loaded = config.ConfigSerializer().load(TEST_CONFIG)
+    loaded = config.ConfigSerializer().load(DEMO_CONFIG)
     assert loaded.storage.backend == datatypes.StorageBackend.MARIA
-    assert loaded.storage.sqlite.path == Path(TEST_CONFIG["storage"]["sqlite"]["path"])
-    assert loaded.storage.sqlite.pragmas == TEST_CONFIG["storage"]["sqlite"]["pragmas"]
-    for key, value in TEST_CONFIG["storage"]["maria"].items():
+    assert loaded.storage.sqlite.path == Path(DEMO_CONFIG["storage"]["sqlite"]["path"])
+    assert loaded.storage.sqlite.pragmas == DEMO_CONFIG["storage"]["sqlite"]["pragmas"]
+    for key, value in DEMO_CONFIG["storage"]["maria"].items():
         assert getattr(loaded.storage.maria, key) == value
 
 
@@ -50,8 +50,8 @@ def test_filepath(tmp_path):
     tmp_file = Path(tmp_path, "conf.toml")
     os.environ[constants.ENV_CONFIG_PATH] = str(tmp_file)
     with tmp_file.open("w+") as outfile:
-        toml.dump(TEST_CONFIG, outfile)
+        toml.dump(DEMO_CONFIG, outfile)
 
-    assert config.load(tmp_file) == config.ConfigSerializer().load(TEST_CONFIG)
+    assert config.load(tmp_file) == config.ConfigSerializer().load(DEMO_CONFIG)
     tmp_file.unlink()
     assert config.load(tmp_file) == config.KeyoskConfig()
