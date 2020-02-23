@@ -25,6 +25,8 @@ class Token(KeyoskBaseModel):
     :attribute revoked: Whether the token has been revoked
     :attribute refresh: Refresh token attached to the issued access token; can be
                         ``None`` if refresh tokens are disabled for the domain
+    :attribute refresh_expires: Datetime indicating when the refresh token, if used,
+                                expires
     :property claims: Claims generated for the token
 
     .. note:: Settings and parameters may be changed on linked records. However, the
@@ -42,6 +44,7 @@ class Token(KeyoskBaseModel):
     expires = peewee.DateTimeField(null=False)
     revoked = peewee.BooleanField(null=False)
     refresh = peewee.CharField(null=True)
+    refresh_expires = peewee.DateTimeField(null=True)
     _claims = peewee.CharField(null=False)
 
     @property

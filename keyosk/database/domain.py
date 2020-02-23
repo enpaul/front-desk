@@ -20,10 +20,10 @@ class Domain(KeyoskBaseModel):
                             purpose
     :attribute contact: Contact link for the domain
     :attribute enabled: Whether the domain is enabled for authentication
-    :attribute enable_password: Whether to allow accounts to authenticate using the
-                                client-set authentication secret
-    :attribute enable_autopassword: Whether to allow accounts to authenticate using the
-                                    server-set authentication secret
+    :attribute enable_client_set_auth: Whether to allow accounts to authenticate using
+                                       the client-set authentication secret
+    :attribute enable_server_set_auth: Whether to allow accounts to authenticate using
+                                       the server-set authentication secret
     :attribute lifespan_access: Number of seconds that an issued JWT access token should
                                 be valid for
     :attribute lifespan_refresh: Number of seconds an an issued JWT refresh token should
@@ -47,8 +47,8 @@ class Domain(KeyoskBaseModel):
     description = peewee.CharField(null=True)
     contact = peewee.CharField(null=True)
     enabled = peewee.BooleanField(null=False)
-    enable_password = peewee.BooleanField(null=False)
-    enable_autopassword = peewee.BooleanField(null=False)
+    enable_client_set_auth = peewee.BooleanField(null=False)
+    enable_server_set_auth = peewee.BooleanField(null=False)
     enable_refresh = peewee.BooleanField(null=False)
     lifespan_access = peewee.IntegerField(null=False)
     lifespan_refresh = peewee.IntegerField(null=False)
