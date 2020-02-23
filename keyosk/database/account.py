@@ -8,7 +8,6 @@ import passlib.hash
 import peewee
 
 from keyosk.database._shared import KeyoskBaseModel
-from keyosk.database.domain import Domain
 from keyosk.datatypes import Extras
 
 

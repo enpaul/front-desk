@@ -32,6 +32,8 @@ class ConfigSerializer(msh.Schema):
 
     storage = msh.fields.Nested(StorageConfigSerializer)
 
+    # pylint: disable=unused-argument,no-self-use
+
     @msh.post_load
     def _make_dataclass(self, data: Mapping[str, Any], *args, **kwargs):
         return KeyoskConfig(**data)
