@@ -41,3 +41,9 @@ class AccountACLEntry(KeyoskBaseModel):
     permission = peewee.ForeignKeyField(DomainPermission)
     with_server_secret = peewee.BooleanField(null=False)
     with_client_secret = peewee.BooleanField(null=False)
+
+    def __iter__(self):
+        yield "access_list", self.access_list.name
+        yield "permission", self.permission.name
+        yield "with_server_secret", self.with_server_secret
+        yield "with_client_secret", self.with_client_secret

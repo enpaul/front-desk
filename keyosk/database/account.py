@@ -88,4 +88,8 @@ class Account(KeyoskBaseModel):
 
     @staticmethod
     def dict_keys() -> List[str]:
-        return ["uuid", "created", "updated", "username", "enabled", "extras"]
+        return ["uuid", "created", "updated", "username", "enabled", "extras", "acls"]
+
+    @staticmethod
+    def foreign_backref() -> List[str]:
+        return ["acls"]
