@@ -5,8 +5,6 @@ omit =
 
 [report]
 exclude_lines =
-    # Testing the main() function isn't a unit test, it's an integration test.
     main()
-    # Don't know why these aren't skipped by default
     \.\.\.
     pass
