@@ -63,11 +63,6 @@ class Domain(KeyoskBaseModel):
         """Return the list of permission names from the backref"""
         return [item.name for item in self._permissions]
 
-    @property
-    def administration(self):
-        """Return administration settings container"""
-        return self._administration[0]
-
     @staticmethod
     def dict_keys() -> List[str]:
         return [
@@ -87,12 +82,7 @@ class Domain(KeyoskBaseModel):
             "lifespan_refresh",
             "access_list_names",
             "permission_names",
-            "administration",
         ]
-
-    @staticmethod
-    def foreign_ref() -> List[str]:
-        return ["administration"]
 
 
 class DomainAccessList(KeyoskBaseModel):

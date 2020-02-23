@@ -90,17 +90,3 @@ class Account(KeyoskBaseModel):
     @staticmethod
     def dict_keys() -> List[str]:
         return ["uuid", "created", "updated", "username", "enabled", "extras"]
-
-
-class AccountAssignment(KeyoskBaseModel):
-    """Many-to-many mapping for assigning accounts to domains
-
-    :attribute account: Account to assign to a domain
-    :attribute domain: Domain to assign an account to
-    """
-
-    class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
-        table_name = "account_assignment"
-
-    account = peewee.ForeignKeyField(Account)
-    domain = peewee.ForeignKeyField(Domain)
