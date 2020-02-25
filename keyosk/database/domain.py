@@ -53,16 +53,6 @@ class Domain(KeyoskBaseModel):
     lifespan_access = peewee.IntegerField(null=False)
     lifespan_refresh = peewee.IntegerField(null=False)
 
-    @property
-    def access_list_names(self) -> List[str]:
-        """Return the list of ACL items from the backref"""
-        return [item.name for item in self._access_lists]
-
-    @property
-    def permission_names(self) -> List[str]:
-        """Return the list of permission names from the backref"""
-        return [item.name for item in self._permissions]
-
     @staticmethod
     def dict_keys() -> List[str]:
         return [
@@ -80,9 +70,13 @@ class Domain(KeyoskBaseModel):
             "enable_refresh",
             "lifespan_access",
             "lifespan_refresh",
-            "access_list_names",
-            "permission_names",
+            "access_lists",
+            "permissions",
         ]
+
+    @staticmethod
+    def foreign_backref() -> List[str]:
+        return ["access_lists", "permissions"]
 
 
 class DomainAccessList(KeyoskBaseModel):
@@ -97,6 +91,10 @@ class DomainAccessList(KeyoskBaseModel):
 
     name = peewee.CharField(null=False)
     domain = peewee.ForeignKeyField(Domain, backref="access_lists")
+
+    @staticmethod
+    def dict_keys() -> List[str]:
+        return ["name"]
 
 
 class DomainPermission(KeyoskBaseModel):
@@ -114,3 +112,7 @@ class DomainPermission(KeyoskBaseModel):
     name = peewee.CharField(null=False)
     bitindex = peewee.IntegerField(null=False)
     domain = peewee.ForeignKeyField(Domain, backref="permissions")
+
+    @staticmethod
+    def dict_keys() -> List[str]:
+        return ["name", "bitindex"]
