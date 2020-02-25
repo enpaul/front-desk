@@ -50,8 +50,28 @@ class Domain(KeyoskBaseModel):
     enable_client_set_auth = peewee.BooleanField(null=False)
     enable_server_set_auth = peewee.BooleanField(null=False)
     enable_refresh = peewee.BooleanField(null=False)
-    lifespan_access = peewee.IntegerField(null=False)
-    lifespan_refresh = peewee.IntegerField(null=False)
+    _lifespan_access = peewee.IntegerField(null=False)
+    _lifespan_refresh = peewee.IntegerField(null=False)
+
+    @property
+    def lifespan_access(self) -> datetime.timedelta:
+        """Return the access lifespan as a timedelta"""
+        return datetime.timedelta(seconds=self._lifespan_access)
+
+    @lifespan_access.setter
+    def lifespan_access(self, value: datetime.timedelta):
+        """Set the access lifespan as an integer from a timedelta"""
+        self._lifespan_access = int(value.total_seconds())
+
+    @property
+    def lifespan_refresh(self) -> datetime.timedelta:
+        """Return the refresh lifespan as a timedelta"""
+        return datetime.timedelta(seconds=self._lifespan_refresh)
+
+    @lifespan_refresh.setter
+    def lifespan_refresh(self, value: datetime.timedelta):
+        """Set the refresh lifespan as an integer from a timedelta"""
+        self._lifespan_refresh = int(value.total_seconds())
 
     @staticmethod
     def dict_keys() -> List[str]:
@@ -65,8 +85,8 @@ class Domain(KeyoskBaseModel):
             "description",
             "contact",
             "enabled",
-            "enable_password",
-            "enable_autopassword",
+            "enable_client_set_auth",
+            "enable_server_set_auth",
             "enable_refresh",
             "lifespan_access",
             "lifespan_refresh",
@@ -77,6 +97,9 @@ class Domain(KeyoskBaseModel):
     @staticmethod
     def foreign_backref() -> List[str]:
         return ["access_lists", "permissions"]
+
+    def __str__(self) -> str:
+        return f"Domain '{self.name}' ({self.uuid})"
 
 
 class DomainAccessList(KeyoskBaseModel):
@@ -95,6 +118,9 @@ class DomainAccessList(KeyoskBaseModel):
     @staticmethod
     def dict_keys() -> List[str]:
         return ["name"]
+
+    def __str__(self) -> str:
+        return self.name
 
 
 class DomainPermission(KeyoskBaseModel):
@@ -116,3 +142,6 @@ class DomainPermission(KeyoskBaseModel):
     @staticmethod
     def dict_keys() -> List[str]:
         return ["name", "bitindex"]
+
+    def __str__(self) -> str:
+        return self.name
