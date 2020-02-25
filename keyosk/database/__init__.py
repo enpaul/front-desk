@@ -60,8 +60,10 @@ def initialize(conf: config.KeyoskConfig):
     if conf.storage.backend == datatypes.StorageBackend.SQLITE:
         logger.debug("Using SQLite database backend")
         logger.debug(f"Applying SQLite pragmas: {conf.storage.sqlite.pragmas}")
+        # Explicit cast-to-string on the path is to support py3.6: sqlite driver
+        # requires a string, vs 3.7+ requires a string-like object
         database = peewee.SqliteDatabase(
-            conf.storage.sqlite.path, pragmas=conf.storage.sqlite.pragmas
+            str(conf.storage.sqlite.path), pragmas=conf.storage.sqlite.pragmas
         )
 
     elif conf.storage.backend == datatypes.StorageBackend.MARIA:

@@ -29,6 +29,7 @@ pytest = "^5.3.5"
 black = {version = "^19.10b0", allow-prereleases = true}
 pylint = "2.3.1"
 astroid = "2.2.5"
+pytest-cov = "^2.8.1"
 
 [build-system]
 requires = ["poetry>=1.0.0"]
