@@ -47,3 +47,6 @@ class AccountACLEntry(KeyoskBaseModel):
         yield "permission", self.permission.name
         yield "with_server_secret", self.with_server_secret
         yield "with_client_secret", self.with_client_secret
+
+    def __str__(self):
+        return f"ACL {self.permission.name}@{self.access_list.name} (scope:{'+'.join([item for item in ['server' if self.with_server_secret else '', 'client' if self.with_client_secret else ''] if item])})"
