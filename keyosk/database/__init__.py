@@ -32,6 +32,7 @@ from keyosk.database.account_acl import AccountACLEntry
 from keyosk.database.domain import Domain
 from keyosk.database.domain import DomainAccessList
 from keyosk.database.domain import DomainPermission
+from keyosk.database.token import Token
 
 
 MODELS: List[Type[KeyoskBaseModel]] = [
@@ -40,6 +41,7 @@ MODELS: List[Type[KeyoskBaseModel]] = [
     DomainPermission,
     Domain,
     AccountACLEntry,
+    Token,
 ]
 
 
@@ -57,22 +59,16 @@ def initialize(conf: config.KeyoskConfig):
 
     if conf.storage.backend == datatypes.StorageBackend.SQLITE:
         logger.debug("Using SQLite database backend")
-        pragmas = {
-            **conf.storage.sqlite.pragmas,
-            **{
-                "journal_mode": "wal",
-                "cache_size": -1 * 64000,
-                "foreign_keys": 1,
-                "ignore_check_constraints": 0,
-                "synchronous": 0,
-            },
-        }
-        for key, value in pragmas:
-            logger.debug(f"Applying pragma '{key}' with value '{value}'")
-        database = peewee.SqliteDatabase(conf.storage.sqlite.path, pragmas=pragmas)
+        logger.debug(f"Applying SQLite pragmas: {conf.storage.sqlite.pragmas}")
+        database = peewee.SqliteDatabase(
+            conf.storage.sqlite.path, pragmas=conf.storage.sqlite.pragmas
+        )
 
     elif conf.storage.backend == datatypes.StorageBackend.MARIA:
         logger.debug("Using MariaDB database backend")
+        logger.debug(
+            f"Configuring MariaDB: {conf.storage.maria.username}@{conf.storage.maria.host}:{conf.storage.maria.port}, with database '{conf.storage.maria.schema}'"
+        )
         database = peewee.MySQLDatabase(
             conf.storage.maria.schema,
             host=conf.storage.maria.host,
@@ -81,8 +77,10 @@ def initialize(conf: config.KeyoskConfig):
             password=conf.storage.maria.password,
             charset="utf8mb4",
         )
-        logger.debug(
-            f"Configuring MariaDB: {conf.storage.maria.username}@{conf.storage.maria.host}:{conf.storage.maria.port} `{conf.storage.maria.schema}`"
+
+    else:
+        raise ValueError(
+            f"Invalid storage backend in configuration: {conf.storage.backend}"
         )
 
     interface.initialize(database)
