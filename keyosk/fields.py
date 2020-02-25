@@ -78,7 +78,7 @@ class PathString(msh.fields.String):
     """Translate between a string and a path object"""
 
     def _serialize(self, value: Union[str, Path], attr, obj, **kwargs) -> str:
-        return super()._serialize(str(value), attr, obj, **kwargs)
+        return super()._serialize(str(value) if value else value, attr, obj, **kwargs)
 
     def _deserialize(self, value: str, attr, data, **kwargs) -> Path:
         return Path(super()._deserialize(value, attr, data, **kwargs))
