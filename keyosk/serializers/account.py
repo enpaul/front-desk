@@ -15,7 +15,7 @@ class AccountSerializer(msh.Schema):
     enabled = msh.fields.Boolean(required=True)
     extras = msh.fields.Dict(
         keys=msh.fields.String(),
-        values=custom_fields.RawMultiType([int, float, bool, str, None]),
+        values=custom_fields.RawMultiType([int, float, bool, str], allow_none=True),
         required=True,
     )
     acls = msh.fields.List(msh.fields.Nested(AccountACLSerializer), required=True)
