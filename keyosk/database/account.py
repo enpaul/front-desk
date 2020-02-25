@@ -93,3 +93,6 @@ class Account(KeyoskBaseModel):
     @staticmethod
     def foreign_backref() -> List[str]:
         return ["acls"]
+
+    def __str__(self) -> str:
+        return f"Account '{self.username}' ({self.uuid})"
