@@ -112,7 +112,7 @@ class DomainAccessList(KeyoskBaseModel):
     class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
         table_name = "domain_acl"
 
-    name = peewee.CharField(null=False)
+    name = peewee.CharField(null=False, unique=True)
     domain = peewee.ForeignKeyField(Domain, backref="access_lists")
 
     @staticmethod
