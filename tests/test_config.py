@@ -5,7 +5,6 @@ import toml
 
 from keyosk import config
 from keyosk import constants
-from keyosk import datatypes
 
 
 DEMO_CONFIG = {
@@ -39,7 +38,7 @@ def test_roundtrip():
 
 def test_settings():
     loaded = config.ConfigSerializer().load(DEMO_CONFIG)
-    assert loaded.storage.backend == datatypes.StorageBackend.MARIA
+    assert loaded.storage.backend == config.StorageBackend.MARIA
     assert loaded.storage.sqlite.path == Path(DEMO_CONFIG["storage"]["sqlite"]["path"])
     assert loaded.storage.sqlite.pragmas == DEMO_CONFIG["storage"]["sqlite"]["pragmas"]
     for key, value in DEMO_CONFIG["storage"]["maria"].items():
