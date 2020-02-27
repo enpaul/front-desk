@@ -24,6 +24,7 @@ from typing import Type
 import peewee
 
 from keyosk import config
+from keyosk import datatypes
 from keyosk.database._shared import INTERFACE as interface
 from keyosk.database._shared import KeyoskBaseModel
 from keyosk.database.account import Account
@@ -56,7 +57,7 @@ def initialize(conf: config.KeyoskConfig):
 
     logger = logging.getLogger(__name__)
 
-    if conf.storage.backend == config.StorageBackend.SQLITE:
+    if conf.storage.backend == datatypes.StorageBackend.SQLITE:
         logger.debug("Using SQLite database backend")
         logger.debug(f"Applying SQLite pragmas: {conf.storage.sqlite.pragmas}")
         # Explicit cast-to-string on the path is to support py3.6: sqlite driver
@@ -65,7 +66,7 @@ def initialize(conf: config.KeyoskConfig):
             str(conf.storage.sqlite.path), pragmas=conf.storage.sqlite.pragmas
         )
 
-    elif conf.storage.backend == config.StorageBackend.MARIA:
+    elif conf.storage.backend == datatypes.StorageBackend.MARIA:
         logger.debug("Using MariaDB database backend")
         logger.debug(
             f"Configuring MariaDB: {conf.storage.maria.username}@{conf.storage.maria.host}:{conf.storage.maria.port}, with database '{conf.storage.maria.schema}'"

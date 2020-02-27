@@ -1,5 +1,4 @@
 """Data containers and utilities related to the storage configuration"""
-import enum
 from dataclasses import asdict
 from dataclasses import dataclass
 from dataclasses import field
@@ -12,15 +11,8 @@ from typing import Union
 
 import marshmallow as msh
 
+from keyosk import datatypes
 from keyosk import fields as custom_fields
-
-
-@enum.unique
-class StorageBackend(enum.Enum):
-    """Supported storage backends"""
-
-    SQLITE = "sqlite"
-    MARIA = "maria"
 
 
 def _default_sqlite_pragmas() -> Dict[str, Any]:
@@ -139,7 +131,7 @@ class KeyoskStorageConfig:
               time, depending on the value of the ``backend`` setting.
     """
 
-    backend: StorageBackend = StorageBackend.SQLITE
+    backend: datatypes.StorageBackend = datatypes.StorageBackend.SQLITE
     sqlite: KeyoskSQLiteStorageConfig = KeyoskSQLiteStorageConfig()
     maria: KeyoskMariaStorageConfig = KeyoskMariaStorageConfig()
 
@@ -151,7 +143,7 @@ class StorageConfigSerializer(msh.Schema):
     :class:`KeyoskStorageConfig` class.
     """
 
-    backend = custom_fields.EnumItem(StorageBackend, pretty_names=True)
+    backend = custom_fields.EnumItem(datatypes.StorageBackend, pretty_names=True)
     sqlite = msh.fields.Nested(SQLiteStorageConfigSerializer)
     maria = msh.fields.Nested(MariaStorageConfigSerializer)
 

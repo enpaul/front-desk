@@ -13,7 +13,6 @@ import toml
 
 from keyosk import constants
 from keyosk.config.storage import KeyoskStorageConfig
-from keyosk.config.storage import StorageBackend  # pylint: disable=unused-import
 from keyosk.config.storage import StorageConfigSerializer
 
 
