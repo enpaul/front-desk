@@ -54,6 +54,11 @@ class Domain(KeyoskBaseModel):
     _lifespan_refresh = peewee.IntegerField(null=False)
 
     @property
+    def access_list_names(self) -> List[str]:
+        """Return the list of access list names"""
+        return [item.name for item in self.access_lists]
+
+    @property
     def lifespan_access(self) -> datetime.timedelta:
         """Return the access lifespan as a timedelta"""
         return datetime.timedelta(seconds=self._lifespan_access)
@@ -90,13 +95,13 @@ class Domain(KeyoskBaseModel):
             "enable_refresh",
             "lifespan_access",
             "lifespan_refresh",
-            "access_lists",
+            "access_list_names",
             "permissions",
         ]
 
     @staticmethod
     def foreign_backref() -> List[str]:
-        return ["access_lists", "permissions"]
+        return ["permissions"]
 
     def __str__(self) -> str:
         return f"Domain '{self.name}' ({self.uuid})"
