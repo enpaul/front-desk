@@ -6,7 +6,7 @@ from pathlib import Path
 import marshmallow
 import pytest
 
-from keyosk import fields
+from keyosk import _fields as fields
 
 
 class DemoEnum(enum.Enum):
