@@ -91,7 +91,7 @@ class Epoch(msh.fields.Field):
         """Serialize a datetime object to an integer"""
 
         if isinstance(value, datetime):
-            return int(value.timestamp())
+            return int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
         return value
 
     def _deserialize(self, value: int, attr, data, **kwargs) -> datetime:
@@ -104,7 +104,7 @@ class Epoch(msh.fields.Field):
             raise msh.ValidationError(
                 f"Invalid epoch value '{value}' of type '{type(value)}'"
             )
-        return datetime.fromtimestamp(int(value))
+        return datetime.utcfromtimestamp(int(value))
 
 
 class RawMultiType(msh.fields.Raw):
