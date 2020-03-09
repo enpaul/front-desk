@@ -1,3 +1,4 @@
+# pylint: disable=unused-argument,redefined-outer-name,unused-import
 import copy
 
 import passlib

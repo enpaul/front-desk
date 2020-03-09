@@ -1,9 +1,9 @@
 import contextlib
 import datetime
 
-import _pytest
 import passlib.hash
 import pytest
+import _pytest  # noreorder
 
 from keyosk import config
 from keyosk import database
@@ -30,6 +30,7 @@ def sqlite_database(tmp_path):
         sqlite_path.unlink()
 
 
+# pylint: disable=too-many-locals
 @pytest.fixture(scope="module")
 def demo_database(request, tmp_path_factory):
     """Generate a database with test data in it for tests"""
