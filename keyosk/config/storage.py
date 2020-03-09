@@ -11,8 +11,8 @@ from typing import Union
 
 import marshmallow as msh
 
+from keyosk import _fields as custom_fields
 from keyosk import datatypes
-from keyosk import fields as custom_fields
 
 
 def _default_sqlite_pragmas() -> Dict[str, Any]:
