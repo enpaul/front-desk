@@ -23,12 +23,13 @@ clean-tox:
 	rm -rf ./.mypy_cache
 	rm -rf ./.tox
 	rm -f .coverage
+	find ./tests -true -type d -name __pycache__ -prune -exec rm -rf {} \;
 
 clean-py:
 	rm -rf ./dist
 	rm -rf ./build
-	rm -rf ./*/__pycache__
 	rm -rf ./*.egg-info
+	find ./keyosk -true -type d -name __pycache__ -prune -exec rm -rf {} \;
 
 clean-docs:
 	rm -rf $(DOC_BUILDDIR)
@@ -47,6 +48,4 @@ build: clean-py tox; ## Test and build python distributions
 	poetry build
 
 docs: clean-docs ## Generate sphinx documentation, provide `DOC_FORMAT` to override default format of "html"
-	poetry run sphinx-apidoc -o "${DOC_SOURCEDIR}" "${DOC_PROJECT}"
-	rm $(DOC_SOURCEDIR)/modules.rst
-	poetry run sphinx-build -M $(DOC_FORMAT) "$(DOC_SOURCEDIR)" "$(DOC_BUILDDIR)" $(DOC_OPTIONS) $(0)
+	poetry run tox -e docs
