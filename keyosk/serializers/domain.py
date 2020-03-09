@@ -140,7 +140,7 @@ class DomainSerializer(msh.Schema):
         )
 
     @classmethod
-    def update(cls, uuid: Union[str, uuid.UUID], data: Dict[str, Any]) -> KeyoskDomain:
+    def update(cls, uuid: Union[str, UUID], data: Dict[str, Any]) -> KeyoskDomain:
         data.update({"uuid": UUID(str(uuid))})
         loaded = cls(exclude=["created", "updated"]).load(data)
         loaded.updated = datetime.datetime.utcnow()
