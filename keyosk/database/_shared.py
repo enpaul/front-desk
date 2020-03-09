@@ -12,10 +12,6 @@ separate modules, and for somewhat arbitrary reasons the base model was put here
 init function kept in init.
 """
 import uuid
-from typing import Any
-from typing import Generator
-from typing import List
-from typing import Tuple
 
 import peewee
 
@@ -41,41 +37,5 @@ class KeyoskBaseModel(peewee.Model):
         null=False, unique=True, primary_key=True, default=uuid.uuid4
     )
 
-    @staticmethod
-    def dict_keys() -> List[str]:
-        """Return tuple of attribute names that should be included in the dict form of the model
-        Inteneded to be used in a dictionary comprehension; see the :meth:`__iter__` method for
-        usage example.
-        """
-        return []
-
-    @staticmethod
-    def foreign_ref() -> List[str]:
-        """Return tuple of attribute names that point to foreign key references on the model
-        Intended for usage when recursively converting models into dictionaries ahead of
-        serialization; see the :meth:`__iter__` method for usage example.
-
-        .. warning:: Foreign keys should only be included here when their attribute appears in the
-                     tuple returned from :meth:`dict_keys`
-        """
-        return []
-
-    @staticmethod
-    def foreign_backref() -> List[str]:
-        """Return tuple of attribute names that point to foreign backreferences on the model
-        Inteneded for usage when recursively converting models into dictionaries ahead of
-        serialization; see the :meth:`__iter__` method for usage example.
-
-        .. warning:: Foreign keys should only be included here when their attribute appears in the
-                     tuple returned from :meth:`dict_keys`
-        """
-        return []
-
-    def __iter__(self) -> Generator[Tuple[str, Any], None, None]:
-        for key in self.dict_keys():
-            if key in self.foreign_ref():
-                yield key, dict(getattr(self, key))
-            elif key in self.foreign_backref():
-                yield key, [dict(item) for item in getattr(self, key)]
-            else:
-                yield key, getattr(self, key)
+    def save_recursive(self, force_insert: bool = False):
+        pass

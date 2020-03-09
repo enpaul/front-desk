@@ -6,8 +6,8 @@ import peewee
 
 from keyosk import datatypes
 from keyosk.database._shared import KeyoskBaseModel
-from keyosk.database.account import Account
-from keyosk.database.domain import Domain
+from keyosk.database.account import KeyoskAccount
+from keyosk.database.domain import KeyoskDomain
 
 
 class Token(KeyoskBaseModel):
@@ -33,22 +33,28 @@ class Token(KeyoskBaseModel):
     class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
         table_name = "token"
 
-    account = peewee.ForeignKeyField(Account, backref="tokens", null=True)
-    domain = peewee.ForeignKeyField(Domain, backref="tokens", null=True)
+    account = peewee.ForeignKeyField(
+        KeyoskAccount, backref="tokens", null=True, on_delete="SET NULL"
+    )
+    domain = peewee.ForeignKeyField(
+        KeyoskDomain, backref="tokens", null=True, on_delete="SET NULL"
+    )
     issuer = peewee.CharField(null=False)
     issued = peewee.DateTimeField(null=False, default=datetime.datetime.utcnow)
     expires = peewee.DateTimeField(null=False)
     revoked = peewee.BooleanField(null=False)
     refresh = peewee.CharField(null=True)
     refresh_expires = peewee.DateTimeField(null=True)
-    _claims = peewee.CharField(null=False)
+    hash_publickey = peewee.CharField(null=False)
+    hash_blacklist = peewee.CharField(null=False)
+    _scopes = peewee.CharField(null=False, default="[]")
 
     @property
-    def claims(self) -> datatypes.TokenClaims:
+    def scopes(self) -> datatypes.TokenClaims:
         """Return the claims dictionary"""
-        return json.loads(self._claims)
+        return json.loads(self._scopes)
 
-    @claims.setter
-    def claims(self, value: datatypes.TokenClaims):
+    @scopes.setter
+    def scopes(self, value: datatypes.TokenClaims):
         """Set the claims dictionary"""
-        self._claims = json.dumps(value)
+        self._scopes = json.dumps(value)

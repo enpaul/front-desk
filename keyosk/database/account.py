@@ -1,17 +1,16 @@
 """Authentication account model definition"""
 import datetime
 import json
-import secrets
-from typing import List
 
-import passlib.hash
 import peewee
 
 from keyosk.database._shared import KeyoskBaseModel
+from keyosk.database.domain import KeyoskDomainAccessList
+from keyosk.database.domain import KeyoskDomainPermission
 from keyosk.datatypes import Extras
 
 
-class Account(KeyoskBaseModel):
+class KeyoskAccount(KeyoskBaseModel):
     """Authentication account storage model
 
     :attribute created: Datetime indicating when the account was first created
@@ -47,52 +46,44 @@ class Account(KeyoskBaseModel):
         """Set the extras dictionary"""
         self._extras = json.dumps(value)
 
-    def verify_client_set_secret(self, value: str) -> bool:
-        """Verify the client set secret matches a value
-
-        :param value: The string to check matches the client-set-secret
-        :returns: Boolean indicating whether the provided value matches the encrypted
-                  secret
-        """
-        return passlib.hash.pbkdf2_sha512.verify(
-            value, self.encrypted_client_set_secret
-        )
-
-    def verify_server_set_secret(self, value: str) -> bool:
-        """Verify the server set secret matches a value
-
-        :param value: The string to check matches the server-set-secret
-        :returns: Boolean indicating whether the provided value matches the encrypted
-                  secret
-        """
-        return passlib.hash.pbkdf2_sha512.verify(
-            value, self.encrypted_server_set_secret
-        )
-
-    def update_client_set_secret(self, value: str) -> None:
-        """Update the client set secret
-
-        :param value: The string to set the encrypted client-set-secret to
-        """
-        self.encrypted_client_set_secret = passlib.hash.pbkdf2_sha512.hash(value)
-
-    def update_server_set_secret(self, length: int = 42) -> str:
-        """Update the server set secret
-
-        :param length: Optional length of the generated token
-        :returns: The new value of the server set secret
-        """
-        value = secrets.token_urlsafe(length)
-        self.encrypted_server_set_secret = passlib.hash.pbkdf2_sha512.hash(value)
-        return value
-
-    @staticmethod
-    def dict_keys() -> List[str]:
-        return ["uuid", "created", "updated", "username", "enabled", "extras", "acls"]
-
-    @staticmethod
-    def foreign_backref() -> List[str]:
-        return ["acls"]
-
     def __str__(self) -> str:
         return f"Account '{self.username}' ({self.uuid})"
+
+
+class KeyoskAccountScope(KeyoskBaseModel):
+    """Access control list entry model definition
+
+    :attribute account: Account the ACL entry applies to
+    :attribute access_list: The access list the entry is for
+    :attribute permission: The permission the entry is for
+    :attribute with_server_secret: Whether the permission should be applied when the
+                                   account authenticates with the account's
+                                   server-set-secret
+    :attribute with_client_secret: Whether the permission should be applied when the
+                                   account authenticates with the account's
+                                   client-set-secret
+
+    .. note:: Since permissions are by definition boolean, there is no need to store a
+              value parameter with an ACL entry: if an entry exists for a given account
+              for a given access list with a given permission, then that permission is
+              granted on that access list to that account; similarly, if one does not
+              exist then it is not granted.
+    """
+
+    class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
+        table_name = "account_scope"
+
+    account = peewee.ForeignKeyField(
+        KeyoskAccount, null=False, on_delete="CASCADE", backref="scopes"
+    )
+    access_list = peewee.ForeignKeyField(
+        KeyoskDomainAccessList, null=False, on_delete="CASCADE"
+    )
+    permission = peewee.ForeignKeyField(
+        KeyoskDomainPermission, null=False, on_delete="CASCADE"
+    )
+    with_server_secret = peewee.BooleanField(null=False)
+    with_client_secret = peewee.BooleanField(null=False)
+
+    def __str__(self):
+        return f"ACL {self.permission.name}@{self.access_list.name} (scope:{'+'.join([item for item in ['server' if self.with_server_secret else '', 'client' if self.with_client_secret else ''] if item])})"

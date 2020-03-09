@@ -1,13 +1,12 @@
 """Authentication domain model definition"""
 import datetime
-from typing import List
 
 import peewee
 
 from keyosk.database._shared import KeyoskBaseModel
 
 
-class Domain(KeyoskBaseModel):
+class KeyoskDomain(KeyoskBaseModel):
     """Authentication domain storage model
 
     :attribute created: Datetime indicating when the domain was first created
@@ -54,11 +53,6 @@ class Domain(KeyoskBaseModel):
     _lifespan_refresh = peewee.IntegerField(null=False)
 
     @property
-    def access_list_names(self) -> List[str]:
-        """Return the list of access list names"""
-        return [item.name for item in self.access_lists]
-
-    @property
     def lifespan_access(self) -> datetime.timedelta:
         """Return the access lifespan as a timedelta"""
         return datetime.timedelta(seconds=self._lifespan_access)
@@ -78,75 +72,25 @@ class Domain(KeyoskBaseModel):
         """Set the refresh lifespan as an integer from a timedelta"""
         self._lifespan_refresh = int(value.total_seconds())
 
-    @staticmethod
-    def dict_keys() -> List[str]:
-        return [
-            "uuid",
-            "created",
-            "updated",
-            "name",
-            "audience",
-            "title",
-            "description",
-            "contact",
-            "enabled",
-            "enable_client_set_auth",
-            "enable_server_set_auth",
-            "enable_refresh",
-            "lifespan_access",
-            "lifespan_refresh",
-            "access_list_names",
-            "permissions",
-        ]
-
-    @staticmethod
-    def foreign_backref() -> List[str]:
-        return ["permissions"]
-
     def __str__(self) -> str:
         return f"Domain '{self.name}' ({self.uuid})"
 
 
-class DomainAccessList(KeyoskBaseModel):
-    """Access list name model definition
+class KeyoskDomainAccessList(KeyoskBaseModel):
+    class Meta:  # pylint: disable=too-few-public-methods,missing-docstring
+        table_name = "domain_access_list"
 
-    :attribute name: Name of the access control list
-    :attribute domain: Authentication domain the ACL applies to
-    """
-
-    class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
-        table_name = "domain_acl"
-
-    name = peewee.CharField(null=False, unique=True)
-    domain = peewee.ForeignKeyField(Domain, backref="access_lists")
-
-    @staticmethod
-    def dict_keys() -> List[str]:
-        return ["name"]
-
-    def __str__(self) -> str:
-        return self.name
+    domain = peewee.ForeignKeyField(
+        KeyoskDomain, null=False, on_delete="CASCADE", backref="access_lists"
+    )
+    name = peewee.CharField(null=False)
 
 
-class DomainPermission(KeyoskBaseModel):
-    """Permission name model definition
-
-    :attribute name: Name of the permission
-    :attribute bitindex: Index in the generated bitmask that indicates this permission;
-                         zero-indexed
-    :attribute domain: Authentication domain the permission should apply to the ACLs of
-    """
-
-    class Meta:  # pylint: disable=missing-docstring,too-few-public-methods
+class KeyoskDomainPermission(KeyoskBaseModel):
+    class Meta:  # pylint: disable=too-few-public-methods,missing-docstring
         table_name = "domain_permission"
 
+    domain = peewee.ForeignKeyField(
+        KeyoskDomain, null=False, on_delete="CASCADE", backref="permissions"
+    )
     name = peewee.CharField(null=False)
-    bitindex = peewee.IntegerField(null=False)
-    domain = peewee.ForeignKeyField(Domain, backref="permissions")
-
-    @staticmethod
-    def dict_keys() -> List[str]:
-        return ["name", "bitindex"]
-
-    def __str__(self) -> str:
-        return self.name
