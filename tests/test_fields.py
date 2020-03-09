@@ -183,7 +183,10 @@ def test_epoch():
     for data in good_data:
         loaded = serializer.load(data)
         assert isinstance(loaded["iamepoch"], datetime.datetime)
-        assert int(loaded["iamepoch"].timestamp()) == data["iamepoch"]
+        assert (
+            int(loaded["iamepoch"].replace(tzinfo=datetime.timezone.utc).timestamp())
+            == data["iamepoch"]
+        )
         assert data == serializer.dump(loaded)
 
     for data in bad_data:
@@ -210,7 +213,12 @@ def test_epoch_none():
             assert loaded["iamepoch"] is None
         else:
             assert isinstance(loaded["iamepoch"], datetime.datetime)
-            assert int(loaded["iamepoch"].timestamp()) == item["iamepoch"]
+            assert (
+                int(
+                    loaded["iamepoch"].replace(tzinfo=datetime.timezone.utc).timestamp()
+                )
+                == item["iamepoch"]
+            )
         assert item == serializer.dump(loaded)
 
 

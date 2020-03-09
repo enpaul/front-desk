@@ -1,5 +1,5 @@
 """Custom fields for handing de/serializing custom data types"""
-from datetime import datetime
+import datetime
 from enum import Enum
 from pathlib import Path
 from typing import Any
@@ -87,10 +87,12 @@ class PathString(msh.fields.String):
 class Epoch(msh.fields.Field):
     """Translate between datetime objects and an integer reperesenting epoch time"""
 
-    def _serialize(self, value: Union[datetime, int], attr, obj, **kwargs) -> int:
+    def _serialize(
+        self, value: Union[datetime.datetime, int], attr, obj, **kwargs
+    ) -> int:
         """Serialize a datetime object to an integer"""
 
-        if isinstance(value, datetime):
+        if isinstance(value, datetime.datetime):
             return int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
         return value
 
@@ -104,7 +106,7 @@ class Epoch(msh.fields.Field):
             raise msh.ValidationError(
                 f"Invalid epoch value '{value}' of type '{type(value)}'"
             )
-        return datetime.utcfromtimestamp(int(value))
+        return datetime.datetime.utcfromtimestamp(int(value))
 
 
 class RawMultiType(msh.fields.Raw):
