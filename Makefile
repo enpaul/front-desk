@@ -23,13 +23,13 @@ clean-tox:
 	rm -rf ./.mypy_cache
 	rm -rf ./.tox
 	rm -f .coverage
-	find ./tests -true -type d -name __pycache__ -prune -exec rm -rf {} \;
+	find ./tests -type d -name __pycache__ -prune -exec rm -rf {} \;
 
 clean-py:
 	rm -rf ./dist
 	rm -rf ./build
 	rm -rf ./*.egg-info
-	find ./keyosk -true -type d -name __pycache__ -prune -exec rm -rf {} \;
+	find ./keyosk -type d -name __pycache__ -prune -exec rm -rf {} \;
 
 clean-docs:
 	rm -rf $(DOC_BUILDDIR)
