@@ -96,7 +96,7 @@ class Epoch(msh.fields.Field):
             return int(value.replace(tzinfo=datetime.timezone.utc).timestamp())
         return value
 
-    def _deserialize(self, value: int, attr, data, **kwargs) -> datetime:
+    def _deserialize(self, value: int, attr, data, **kwargs) -> datetime.datetime:
         """Deserialize an integer to a datetime object"""
 
         try:
