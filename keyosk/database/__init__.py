@@ -28,10 +28,10 @@ from keyosk import datatypes
 from keyosk.database._shared import INTERFACE as interface
 from keyosk.database._shared import KeyoskBaseModel
 from keyosk.database.account import KeyoskAccount
-from keyosk.database.account import KeyoskAccountScope
 from keyosk.database.domain import KeyoskDomain
-from keyosk.database.domain import KeyoskDomainAccessList
-from keyosk.database.domain import KeyoskDomainPermission
+from keyosk.database.domain_access_list import KeyoskDomainAccessList
+from keyosk.database.domain_permission import KeyoskDomainPermission
+from keyosk.database.scope import KeyoskAccountScope
 from keyosk.database.token import Token
 
 
