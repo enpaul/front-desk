@@ -11,4 +11,4 @@ class KeyoskDomainAccessList(KeyoskBaseModel):
     domain = peewee.ForeignKeyField(
         KeyoskDomain, null=False, on_delete="CASCADE", backref="access_lists"
     )
-    name = peewee.CharField(null=False)
+    name = peewee.CharField(null=False, unique=True)

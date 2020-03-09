@@ -7,11 +7,11 @@ import pytest
 
 from keyosk import config
 from keyosk import database
-from keyosk.database import Account
-from keyosk.database import AccountACLEntry
-from keyosk.database import Domain
-from keyosk.database import DomainAccessList
-from keyosk.database import DomainPermission
+from keyosk.database import KeyoskAccount
+from keyosk.database import KeyoskAccountScope
+from keyosk.database import KeyoskDomain
+from keyosk.database import KeyoskDomainAccessList
+from keyosk.database import KeyoskDomainPermission
 
 
 @contextlib.contextmanager
@@ -42,7 +42,7 @@ def demo_database(request, tmp_path_factory):
     tmp_path = _pytest.tmpdir._mk_tmp(request, tmp_path_factory)
 
     accounts = [
-        Account(
+        KeyoskAccount(
             username="lskywalker",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash(
                 "xWingLuvr4evA"
@@ -55,7 +55,7 @@ def demo_database(request, tmp_path_factory):
                 "jedi": True,
             },
         ),
-        Account(
+        KeyoskAccount(
             username="dvader",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash(
                 "nobodyKnowsIKilledAllTheYounglings"
@@ -68,14 +68,14 @@ def demo_database(request, tmp_path_factory):
                 "jedi": False,
             },
         ),
-        Account(
+        KeyoskAccount(
             username="hsolo",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash("landosux"),
             encrypted_server_set_secret=passlib.hash.pbkdf2_sha512.hash("12ab34cd"),
             enabled=True,
             extras={"full-name": "Han Solo", "homeworld": "Corellia", "jedi": False,},
         ),
-        Account(
+        KeyoskAccount(
             username="deusexmachina",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash(
                 "whenyouneedsomethingtosavetheday:whoyagonnacall"
@@ -90,14 +90,14 @@ def demo_database(request, tmp_path_factory):
                 "species": None,
             },
         ),
-        Account(
+        KeyoskAccount(
             username="jack.oneill@airforce.gov",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash("topgun"),
             encrypted_server_set_secret=passlib.hash.pbkdf2_sha512.hash("987654321"),
             enabled=True,
             extras={"rank": "colonel", "species": "human",},
         ),
-        Account(
+        KeyoskAccount(
             username="tealc@airforce.gov",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash(
                 "yourloginpassword"
@@ -106,7 +106,7 @@ def demo_database(request, tmp_path_factory):
             enabled=True,
             extras={"rank": None, "species": "jaffa"},
         ),
-        Account(
+        KeyoskAccount(
             username="jonas.quinn@airforce.gov",
             encrypted_client_set_secret=passlib.hash.pbkdf2_sha512.hash(
                 "d7409ed1dd0a485b8e09f7147ad0e3ab"
@@ -118,7 +118,7 @@ def demo_database(request, tmp_path_factory):
     ]
 
     domains = [
-        Domain(
+        KeyoskDomain(
             name="star-wars",
             audience="stwr",
             title="Star Wars (by Disney)",
@@ -131,7 +131,7 @@ def demo_database(request, tmp_path_factory):
             lifespan_access=datetime.timedelta(minutes=30),
             lifespan_refresh=datetime.timedelta(days=30),
         ),
-        Domain(
+        KeyoskDomain(
             name="stargate",
             audience="sg1",
             title="Stargate SG-1",
@@ -148,132 +148,136 @@ def demo_database(request, tmp_path_factory):
 
     with sqlite_database(tmp_path):
         with database.interface.atomic():
-            Account.bulk_create(accounts)
-            Domain.bulk_create(domains)
+            KeyoskAccount.bulk_create(accounts)
+            KeyoskDomain.bulk_create(domains)
 
-        starwars = Domain.get(Domain.name == "star-wars")
-        stargate = Domain.get(Domain.name == "stargate")
+        starwars = KeyoskDomain.get(KeyoskDomain.name == "star-wars")
+        stargate = KeyoskDomain.get(KeyoskDomain.name == "stargate")
 
         access_lists = [
-            DomainAccessList(name="imperial-star-destroyer", domain=starwars),
-            DomainAccessList(name="millenium-falcon", domain=starwars),
-            DomainAccessList(name="x-wing", domain=starwars),
-            DomainAccessList(name="nebulon-b", domain=starwars),
-            DomainAccessList(name="p90", domain=stargate),
-            DomainAccessList(name="staff-weapon", domain=stargate),
-            DomainAccessList(name="zatniktel", domain=stargate),
+            KeyoskDomainAccessList(name="imperial-star-destroyer", domain=starwars),
+            KeyoskDomainAccessList(name="millenium-falcon", domain=starwars),
+            KeyoskDomainAccessList(name="x-wing", domain=starwars),
+            KeyoskDomainAccessList(name="nebulon-b", domain=starwars),
+            KeyoskDomainAccessList(name="p90", domain=stargate),
+            KeyoskDomainAccessList(name="staff-weapon", domain=stargate),
+            KeyoskDomainAccessList(name="zatniktel", domain=stargate),
         ]
 
         permissions = [
-            DomainPermission(name="access", bitindex=0, domain=starwars),
-            DomainPermission(name="fly", bitindex=1, domain=starwars),
-            DomainPermission(name="attack", bitindex=2, domain=starwars),
-            DomainPermission(name="own", bitindex=0, domain=stargate),
-            DomainPermission(name="fire", bitindex=1, domain=stargate),
-            DomainPermission(name="reload", bitindex=2, domain=stargate),
-            DomainPermission(name="repair", bitindex=3, domain=stargate),
+            KeyoskDomainPermission(name="access", bitindex=0, domain=starwars),
+            KeyoskDomainPermission(name="fly", bitindex=1, domain=starwars),
+            KeyoskDomainPermission(name="attack", bitindex=2, domain=starwars),
+            KeyoskDomainPermission(name="own", bitindex=0, domain=stargate),
+            KeyoskDomainPermission(name="fire", bitindex=1, domain=stargate),
+            KeyoskDomainPermission(name="reload", bitindex=2, domain=stargate),
+            KeyoskDomainPermission(name="repair", bitindex=3, domain=stargate),
         ]
 
         with database.interface.atomic():
-            DomainAccessList.bulk_create(access_lists)
-            DomainPermission.bulk_create(permissions)
+            KeyoskDomainAccessList.bulk_create(access_lists)
+            KeyoskDomainPermission.bulk_create(permissions)
 
-        deusexmachina = Account.get(Account.username == "deusexmachina")
-        lskywalker = Account.get(Account.username == "lskywalker")
-        jackoneill = Account.get(Account.username == "jack.oneill@airforce.gov")
-
-        sw_isd = DomainAccessList.get(
-            DomainAccessList.name == "imperial-star-destroyer"
+        deusexmachina = KeyoskAccount.get(KeyoskAccount.username == "deusexmachina")
+        lskywalker = KeyoskAccount.get(KeyoskAccount.username == "lskywalker")
+        jackoneill = KeyoskAccount.get(
+            KeyoskAccount.username == "jack.oneill@airforce.gov"
         )
-        sg_zatniktel = DomainAccessList.get(DomainAccessList.name == "zatniktel")
 
-        sw_access = DomainPermission.get(DomainPermission.name == "access")
-        sw_fly = DomainPermission.get(DomainPermission.name == "fly")
-        sw_attack = DomainPermission.get(DomainPermission.name == "attack")
-        sg_own = DomainPermission.get(DomainPermission.name == "own")
-        sg_fire = DomainPermission.get(DomainPermission.name == "fire")
-        sg_reload = DomainPermission.get(DomainPermission.name == "reload")
-        sg_repair = DomainPermission.get(DomainPermission.name == "repair")
+        sw_isd = KeyoskDomainAccessList.get(
+            KeyoskDomainAccessList.name == "imperial-star-destroyer"
+        )
+        sg_zatniktel = KeyoskDomainAccessList.get(
+            KeyoskDomainAccessList.name == "zatniktel"
+        )
+
+        sw_access = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "access")
+        sw_fly = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "fly")
+        sw_attack = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "attack")
+        sg_own = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "own")
+        sg_fire = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "fire")
+        sg_reload = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "reload")
+        sg_repair = KeyoskDomainPermission.get(KeyoskDomainPermission.name == "repair")
 
         acls = [
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sw_isd,
                 permission=sw_access,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sw_isd,
                 permission=sw_fly,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sw_isd,
                 permission=sw_attack,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sg_zatniktel,
                 permission=sg_own,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sg_zatniktel,
                 permission=sg_fire,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sg_zatniktel,
                 permission=sg_reload,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=deusexmachina,
                 access_list=sg_zatniktel,
                 permission=sg_repair,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=lskywalker,
                 access_list=sw_isd,
                 permission=sw_attack,
                 with_server_secret=True,
                 with_client_secret=True,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=lskywalker,
                 access_list=sw_isd,
                 permission=sw_access,
                 with_server_secret=True,
                 with_client_secret=False,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=jackoneill,
                 access_list=sg_zatniktel,
                 permission=sg_fire,
                 with_server_secret=True,
                 with_client_secret=True,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=jackoneill,
                 access_list=sg_zatniktel,
                 permission=sg_reload,
                 with_server_secret=True,
                 with_client_secret=True,
             ),
-            AccountACLEntry(
+            KeyoskAccountScope(
                 account=jackoneill,
                 access_list=sg_zatniktel,
                 permission=sg_repair,
@@ -283,6 +287,6 @@ def demo_database(request, tmp_path_factory):
         ]
 
         with database.interface.atomic():
-            AccountACLEntry.bulk_create(acls)
+            KeyoskAccountScope.bulk_create(acls)
 
         yield
