@@ -13,7 +13,7 @@ class DemoEnum(enum.Enum):
     DEATH = "star"
     YAVIN = 4
     DARTH = "vader"
-    FIGHERS = ["xwing", "ywing", "awing"]
+    FIGHTERS = ["xwing", "ywing", "awing"]
     LUKE_SKYWALKER = "jedi-knight"
 
 
