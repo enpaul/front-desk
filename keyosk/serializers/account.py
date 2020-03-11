@@ -28,9 +28,8 @@ class AccountSerializer(msh.Schema):
     )
     scopes = msh.fields.List(msh.fields.Nested(AccountScopeSerializer), required=True)
 
-    @staticmethod
     @msh.post_load
-    def _make_model(data: Dict[str, Any], **kwargs) -> KeyoskAccount:
+    def _make_model(self, data: Dict[str, Any], **kwargs) -> KeyoskAccount:
         scopes = []
         for item in data["scopes"]:
             item.account_id = data["uuid"]
@@ -38,11 +37,10 @@ class AccountSerializer(msh.Schema):
         data["scopes"] = scopes
         return KeyoskAccount(**data)
 
-    @staticmethod
     @msh.pre_dump
-    def _unmake_model(data: KeyoskAccount, **kwargs) -> Dict[str, Any]:
+    def _unmake_model(self, data: KeyoskAccount, **kwargs) -> Dict[str, Any]:
         return shortcuts.model_to_dict(
-            data, recurse=False, backrefs=True, extra_attrs=["extras"],
+            data, recurse=True, backrefs=True, max_depth=1, extra_attrs=["extras"],
         )
 
     @classmethod

@@ -87,7 +87,7 @@ class DomainSerializer(msh.Schema):
 
     @staticmethod
     def serialize_access_lists(obj: Dict[Any, Any]) -> List[str]:
-        return [item.name for item in obj["access_lists"]]
+        return [item["name"] for item in obj.get("access_lists", [])]
 
     @staticmethod
     def deserialize_permissions(value: List[str]) -> List[KeyoskDomainPermission]:
@@ -110,11 +110,10 @@ class DomainSerializer(msh.Schema):
 
     @staticmethod
     def serialize_permissions(obj: Dict[Any, Any]) -> List[str]:
-        return [item.name for item in obj["permissions"]]
+        return [item["name"] for item in obj.get("permissions", [])]
 
-    @staticmethod
     @msh.post_load
-    def _make_model(data: Dict[str, Any], **kwargs) -> KeyoskDomain:
+    def _make_model(self, data: Dict[str, Any], **kwargs) -> KeyoskDomain:
         acls = []
         for item in data["access_lists"]:
             item.domain_id = data["uuid"]
@@ -129,14 +128,15 @@ class DomainSerializer(msh.Schema):
 
         return KeyoskDomain(**data)
 
-    @staticmethod
     @msh.pre_dump
-    def _unmake_model(data: KeyoskDomain, **kwargs) -> Dict[str, Any]:
+    def _unmake_model(self, data: KeyoskDomain, **kwargs) -> Dict[str, Any]:
         return shortcuts.model_to_dict(
             data,
-            recurse=False,
+            recurse=True,
             backrefs=True,
-            extra_attrs=["lifespan_access", "lifespan_refresh",],
+            exclude=[KeyoskDomain._lifespan_access, KeyoskDomain._lifespan_refresh],
+            extra_attrs=["lifespan_access", "lifespan_refresh"],
+            max_depth=1,
         )
 
     @classmethod
