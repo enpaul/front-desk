@@ -1,5 +1,6 @@
 from typing import Any
 from typing import Dict
+from typing import Union
 
 import marshmallow as msh
 from playhouse import shortcuts
@@ -18,12 +19,14 @@ class AccountScopeSerializer(msh.Schema):
         required=True, data_key="with-client-secret"
     )
 
-    @staticmethod
     @msh.post_load
-    def _make_model(data: Dict[str, Any], **kwargs) -> KeyoskAccountScope:
+    def _make_model(self, data: Dict[str, Any], **kwargs) -> KeyoskAccountScope:
         return KeyoskAccountScope(**data)
 
-    @staticmethod
     @msh.pre_dump
-    def _unmake_model(data: KeyoskAccountScope, **kwargs) -> Dict[str, Any]:
-        return shortcuts.model_to_dict(data, recurse=False, backrefs=False,)
+    def _unmake_model(
+        self, data: Union[Dict[str, Any], KeyoskAccountScope], **kwargs
+    ) -> Dict[str, Any]:
+        if isinstance(data, KeyoskAccountScope):
+            return shortcuts.model_to_dict(data, recurse=False, backrefs=False)
+        return data

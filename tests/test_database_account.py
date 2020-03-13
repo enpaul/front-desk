@@ -10,9 +10,15 @@ from keyosk import database
 
 
 def test_formatting(demo_database):
-    for account in database.KeyoskAccount.select():
+    for account in (
+        database.KeyoskAccount.select().join(database.KeyoskAccountScope).select()
+    ):
         assert str(account.uuid) in str(account)
         assert account.username in str(account)
+        for scope in account.scopes:
+            assert str(scope.uuid) not in str(scope)
+            assert scope.permission.name in str(scope)
+            assert scope.access_list.name in str(scope)
 
 
 def test_extras(demo_database):

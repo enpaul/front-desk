@@ -42,4 +42,4 @@ class KeyoskAccountScope(KeyoskBaseModel):
     with_client_secret = peewee.BooleanField(null=False)
 
     def __str__(self):
-        return f"ACL {self.permission.name}@{self.access_list.name} (scope:{'+'.join([item for item in ['server' if self.with_server_secret else '', 'client' if self.with_client_secret else ''] if item])})"
+        return f"Scope {self.permission.name}@{self.access_list.name} (with:{'+'.join([item for item in ['server' if self.with_server_secret else '', 'client' if self.with_client_secret else ''] if item])})"

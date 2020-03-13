@@ -1,12 +1,11 @@
 # pylint: disable=unused-argument,redefined-outer-name,unused-import
-import pytest
 from fixtures import demo_database
 
 from keyosk import database
 from keyosk import serializers
 
 
-def test_roundtrip(demo_database):
+def test_compatibility(demo_database):
     serializer = serializers.DomainSerializer()
 
     for domain in database.KeyoskDomain.select():
