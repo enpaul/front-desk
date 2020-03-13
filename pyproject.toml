@@ -1,11 +1,20 @@
 [tool.poetry]
 name = "keyosk"
 version = "0.1.0-alpha-1"
-description = "REST API for issuing and managing JSON web tokens"
-authors = ["Ethan Paul <e@enp.one>"]
+description = "Simple JWT application for HTTP-based microservices"
+authors = ["Ethan Paul <ethan.paul@enp.one>"]
 license = "MIT"
 repository = "https://github.com/enpaul/keyosk/"
+homepage = "https://github.com/enpaul/keyosk/"
+documentation = "https://github.com/enpaul/keyosk/"
 packages = [{include = "keyosk"}]
+keywords = ["jwt", "rest", "flask", "docker", "microservice", "http"]
+classifiers = [
+  "Development Status :: 2 - Pre-Alpha",
+  "Framework :: Flask",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: English"
+]
 
 [tool.poetry.dependencies]
 python = "^3.6"
