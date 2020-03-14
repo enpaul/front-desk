@@ -18,27 +18,26 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = "^3.6"
-toml = "^0.10.0"
+dataclasses = {version = "^0.7", python = "3.6"}
+marshmallow = "^3.5.0"
+passlib = "^1.7.2"
 peewee = "^3.13.1"
 pymysql = "^0.9.3"
-marshmallow = "^3.5.0"
-dataclasses = {version = "^0.7", python = "3.6"}
-passlib = "^1.7.2"
+toml = "^0.10.0"
 
 [tool.poetry.dev-dependencies]
-tox = "^3.14.5"
+bandit = "^1.6.2"
+black = {version = "^19.10b0", allow-prereleases = true}
+ipython = "^7.12.0"
+mypy = "^0.761"
+pre-commit = "^2.1.0"
+pytest = "^5.3.5"
+pytest-cov = "^2.8.1"
+pylint = "^2.4.4"
+reorder-python-imports = "^1.9.0"
 sphinx = "^2.4.2"
 sphinx-autodoc-typehints = "^1.10.3"
-reorder-python-imports = "^1.9.0"
-bandit = "^1.6.2"
-ipython = "^7.12.0"
-pre-commit = "^2.1.0"
-mypy = "^0.761"
-pytest = "^5.3.5"
-black = {version = "^19.10b0", allow-prereleases = true}
-pylint = "2.3.1"
-astroid = "2.2.5"
-pytest-cov = "^2.8.1"
+tox = "^3.14.5"
 
 [build-system]
 requires = ["poetry>=1.0.0"]
