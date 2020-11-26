@@ -1,12 +1,8 @@
-"""Access package info programatically without duplication"""
-import importlib.resources
+# pylint: disable=missing-docstring
 
-import toml
-
-PYPROJECT = toml.loads(importlib.resources.read_text("keyosk", "pyproject.toml"))
-
-__authors__ = PYPROJECT["tool"]["poetry"]["authors"]
-__summary__ = PYPROJECT["tool"]["poetry"]["description"]
-__title__ = PYPROJECT["tool"]["poetry"]["name"]
-__url__ = PYPROJECT["tool"]["poetry"]["repository"]
-__version__ = PYPROJECT["tool"]["poetry"]["version"]
+__title__ = "keyosk"
+__summary__ = "Simple authentication provider for OAuth2 and OpenID-Connect systems"
+__version__ = "0.1.0"
+__url__ = "https://github.com/enpaul/keyosk/"
+__license__ = "GPL-3.0-only"
+__authors__ = ["Ethan Paul <24588726+enpaul@users.noreply.github.com>"]

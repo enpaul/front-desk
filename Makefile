@@ -1,12 +1,7 @@
 # Keyosk makefile for building and deployment prep
 
-VERSION           ?= $(shell cat pyproject.toml | grep "^version =" | cut -d "\"" -f 2)
-DOC_FORMAT        ?= html
-DOC_OPTIONS       ?=
-DOC_SOURCEDIR      = ./docs
-DOC_BUILDDIR       = ./docs/_build
-DOC_PROJECT        = keyosk
-DOCKER_CONTAINER   = keyosk
+VERSION  = $(shell cat pyproject.toml | grep "^version =" | cut -d "\"" -f 2)
+PROJECT  = keyosk
 
 .PHONY: help docs
 # Put it first so that "make" without argument is like "make help"
@@ -20,20 +15,20 @@ tox:
 	poetry run tox
 
 clean-tox:
-	rm -rf ./.mypy_cache
-	rm -rf ./.tox
-	rm -f .coverage
+	rm --recursive --force ./.mypy_cache
+	rm --recursive --force ./.tox
+	rm --force .coverage
 
 clean-py:
-	rm -rf ./dist
-	rm -rf ./build
-	rm -rf ./*/__pycache__
-	rm -rf ./*.egg-info
+	rm --recursive --force ./dist
+	rm --recursive --force ./build
+	rm --recursive --force ./*.egg-info
+	rm --recursive --force ./**/__pycache__
 
 clean-docs:
-	rm -rf $(DOC_BUILDDIR)
-	rm -f $(DOC_SOURCEDIR)/$(DOC_PROJECT)*.rst
-	rm -f $(DOC_SOURCEDIR)/modules.rst
+	rm --recursive --force ./docs/_build
+	rm --force ./docs/$(PROJECT)*.rst
+	rm --force ./docs/modules.rst
 
 clean: clean-tox clean-py clean-docs; ## Clean up all temp build/cache files and directories
 
@@ -43,10 +38,11 @@ wheel: ## Build Python binary wheel package for distribution
 source: ## Build Python source package for distribution
 	poetry build --format sdist
 
-build: clean-py tox; ## Test and build python distributions
-	poetry build
+test: clean-tox ## Run the project testsuite
+	poetry run tox
 
-docs: clean-docs ## Generate sphinx documentation, provide `DOC_FORMAT` to override default format of "html"
-	poetry run sphinx-apidoc -o "${DOC_SOURCEDIR}" "${DOC_PROJECT}"
-	rm $(DOC_SOURCEDIR)/modules.rst
-	poetry run sphinx-build -M $(DOC_FORMAT) "$(DOC_SOURCEDIR)" "$(DOC_BUILDDIR)" $(DOC_OPTIONS) $(0)
+publish: clean tox wheel source ## Build and upload to pypi (requires $PYPI_API_KEY be set)
+	@poetry publish --username __token__ --password $(PYPI_API_KEY)
+
+docs: clean-docs ## Generate documentation with Sphinx
+	poetry run tox -e docs
