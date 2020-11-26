@@ -6,7 +6,6 @@ sources of truth agree with each other.
 from pathlib import Path
 
 import toml
-
 from keyosk import __about__
 
 

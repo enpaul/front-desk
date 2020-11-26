@@ -25,4 +25,7 @@ repos:
     rev: master
     hooks:
       - id: reorder-python-imports
+        args:
+          - --application-directories=keyosk
         language: system
+        exclude: "tests/"
